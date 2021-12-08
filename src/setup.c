@@ -1,0 +1,82 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   setup.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/21 19:17:01 by gariadno          #+#    #+#             */
+/*   Updated: 2021/12/08 04:54:26 by gariadno         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philo.h"
+
+int	invalid_args(int argc, char **argv)
+{
+	int	i;
+
+	while (argc--)
+	{
+		i = -1;
+		while (argv[argc][++i])
+			if (argv[argc][i] < '0' || argv[argc][i] > '9')
+				return (1);
+	}
+	return (0);
+}
+
+int	ft_atoi(char *str)
+{
+	int	res;
+
+	res = 0;
+	while (*str)
+		res = res * 10 + *str++ - '0';
+	return (res);
+}
+
+int	create_philos(t_settings *sett)
+{
+	int	i;
+
+	i = 0;
+	while (i < sett->nphilos)
+	{
+		sett->philos[i].sett = sett;
+		sett->philos[i].id = i + 1;
+		sett->philos[i].rfork = i;
+		sett->philos[i].lfork = i + 1;
+		if (i + 1 == sett->nphilos)
+			sett->philos[i].lfork = 0;
+		if (pthread_mutex_init(&sett->forks[i], NULL))
+			return (free_n_philos(sett, i));
+		i++;
+	}
+	return (1);
+}
+
+int	setup(int argc, char **argv, t_settings *sett)
+{
+	if ((argc != 4 && argc != 5) || invalid_args(argc, argv))
+		return (0);
+	sett->nphilos = ft_atoi(argv[0]);
+	sett->ttdie = ft_atoi(argv[1]);
+	sett->tteat = ft_atoi(argv[2]);
+	sett->ttsleep = ft_atoi(argv[3]);
+	if (sett->nphilos == 0 || sett->ttdie == 0
+		|| sett->tteat == 0 || sett->ttsleep == 0)
+		return (0);
+	if (argv[4])
+		sett->tmust_eat = ft_atoi(argv[4]);
+	if (argv[4] && sett->tmust_eat == 0)
+		return (0);
+	sett->philos = NULL;
+	sett->forks = NULL;
+	sett->philos = malloc(sett->nphilos * sizeof(t_philo));
+	sett->forks = malloc(sett->nphilos * sizeof(pthread_mutex_t));
+	if (!(sett->philos) || !(sett->forks)
+		|| pthread_mutex_init(&sett->print, NULL))
+		return (basic_free(sett));
+	return (create_philos(sett));
+}

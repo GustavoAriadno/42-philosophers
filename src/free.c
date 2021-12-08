@@ -1,25 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/21 23:26:53 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/08 04:39:40 by gariadno         ###   ########.fr       */
+/*   Created: 2021/11/30 02:40:42 by gariadno          #+#    #+#             */
+/*   Updated: 2021/12/08 01:49:38 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char *argv[])
+int	basic_free(t_settings *sett)
 {
-	t_settings sett;
-
-	if (!setup(--argc, ++argv, &sett))
-		return (1);
-	if (!start_banquet(&sett))
-		return (1);
-	free_everything(&sett);
+	free(sett->forks);
+	free(sett->philos);
+	pthread_mutex_destroy(&sett->print);
 	return (0);
+}
+
+int	free_n_philos(t_settings *sett, int n)
+{
+	while (n != -1)
+		pthread_mutex_destroy(&sett->forks[n--]);
+	return (basic_free(sett));
+}
+
+int	free_everything(t_settings *sett)
+{
+	return (free_n_philos(sett, sett->nphilos - 1));
 }

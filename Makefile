@@ -5,12 +5,13 @@ C_FLAGS	=	-c		\
 			-Wall	\
 			-Wextra	\
 			-Werror	\
-			-I${INCLUDE}
-
-INCLUDE	=	./include
+			-I include/
 
 SRC_DIR	=	src
-SRC		=	main.c
+SRC		=	main.c	\
+			setup.c	\
+			free.c	\
+			banquet.c
 
 vpath %.c ${SRC_DIR}
 
