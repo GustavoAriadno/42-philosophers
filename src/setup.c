@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 19:17:01 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/08 04:54:26 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/11 19:27:03 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,17 @@ int	create_philos(t_settings *sett)
 	i = 0;
 	while (i < sett->nphilos)
 	{
-		sett->philos[i].sett = sett;
 		sett->philos[i].id = i + 1;
+		sett->philos[i].have_eaten = 0;
 		sett->philos[i].rfork = i;
 		sett->philos[i].lfork = i + 1;
-		if (i + 1 == sett->nphilos)
-			sett->philos[i].lfork = 0;
+		sett->philos[i].lastmeal = get_now();
+		sett->philos[i].sett = sett;
 		if (pthread_mutex_init(&sett->forks[i], NULL))
 			return (free_n_philos(sett, i));
 		i++;
 	}
+	sett->philos[i - 1].lfork = 0;
 	return (1);
 }
 
@@ -60,6 +61,7 @@ int	setup(int argc, char **argv, t_settings *sett)
 {
 	if ((argc != 4 && argc != 5) || invalid_args(argc, argv))
 		return (0);
+	sett->someone_died = 0;
 	sett->nphilos = ft_atoi(argv[0]);
 	sett->ttdie = ft_atoi(argv[1]);
 	sett->tteat = ft_atoi(argv[2]);
@@ -75,7 +77,7 @@ int	setup(int argc, char **argv, t_settings *sett)
 	sett->forks = NULL;
 	sett->philos = malloc(sett->nphilos * sizeof(t_philo));
 	sett->forks = malloc(sett->nphilos * sizeof(pthread_mutex_t));
-	if (!(sett->philos) || !(sett->forks)
+	if (!sett->philos || !sett->forks
 		|| pthread_mutex_init(&sett->print, NULL))
 		return (basic_free(sett));
 	return (create_philos(sett));

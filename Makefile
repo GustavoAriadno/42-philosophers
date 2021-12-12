@@ -1,16 +1,17 @@
 NAME	=	philo
 
-CC		=	clang
+CC		=	gcc
 C_FLAGS	=	-c		\
 			-Wall	\
 			-Wextra	\
-			-Werror	\
 			-I include/
 
 SRC_DIR	=	src
 SRC		=	main.c	\
 			setup.c	\
+			utils.c	\
 			free.c	\
+			eat.c	\
 			banquet.c
 
 vpath %.c ${SRC_DIR}
