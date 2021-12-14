@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 23:27:06 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/12 01:08:39 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/14 03:47:27 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-# define TESTE		"TESTANDO"
 # define TAKEN_FORK	"has taken a fork"
 # define EATING		"is eating"
 # define SLEEPING	"is sleeping"
@@ -58,14 +57,10 @@ struct	s_settings
 
 int			setup(int argc, char **argv, t_settings *sett);
 
-int			start_banquet(t_settings *sett);
-
-int			eat(t_philo *phi);
+int			start_banquet(t_settings *s);
 int			death_during(t_philo *phi, int action_time);
 
-
 long int	get_now(void);
-void		print(char *str, long int x, long int y, t_settings *s);
 void		print_status(t_philo *philo, char *status);
 
 int			basic_free(t_settings *sett);

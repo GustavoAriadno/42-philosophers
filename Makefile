@@ -8,10 +8,9 @@ C_FLAGS	=	-c		\
 
 SRC_DIR	=	src
 SRC		=	main.c	\
+			free.c	\
 			setup.c	\
 			utils.c	\
-			free.c	\
-			eat.c	\
 			banquet.c
 
 vpath %.c ${SRC_DIR}

@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 01:26:18 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/12 03:37:33 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/14 03:47:37 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,26 @@ void	*lonephilo(t_philo *phi)
 	print_status(phi, THINKING);
 	print_status(phi, DIED);
 	return (NULL);
+}
+
+int	eat(t_philo *phi)
+{
+	pthread_mutex_lock(&phi->sett->forks[phi->rfork]);
+	print_status(phi, TAKEN_FORK);
+	pthread_mutex_lock(&phi->sett->forks[phi->lfork]);
+	print_status(phi, TAKEN_FORK);
+	phi->lastmeal = get_now() + phi->sett->tteat;
+	print_status(phi, EATING);
+	if (death_during(phi, phi->sett->tteat))
+	{
+		pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
+		pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
+		return (0);
+	}
+	pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
+	pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
+	phi->have_eaten++;
+	return (1);
 }
 
 void	*routine(void *param)
