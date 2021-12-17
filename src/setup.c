@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 19:17:01 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/11 19:27:03 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/16 03:48:53 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	setup(int argc, char **argv, t_settings *sett)
 {
 	if ((argc != 4 && argc != 5) || invalid_args(argc, argv))
 		return (0);
-	sett->someone_died = 0;
+	sett->stop_sim = 0;
 	sett->nphilos = ft_atoi(argv[0]);
 	sett->ttdie = ft_atoi(argv[1]);
 	sett->tteat = ft_atoi(argv[2]);

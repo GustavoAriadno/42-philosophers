@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 23:27:06 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/14 03:47:27 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/16 03:48:20 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # include <stdio.h>
+# include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
@@ -44,12 +45,13 @@ struct	s_philo
 struct	s_settings
 {
 	long int	sim_start;
-	int			someone_died;
+	int			stop_sim;
 	int			nphilos;
 	int			ttdie;
 	int			tteat;
 	int			ttsleep;
 	int			tmust_eat;
+	pthread_t	monitor;
 	t_philo		*philos;
 	t_pthrd_mtx	*forks;
 	t_pthrd_mtx	print;
@@ -59,6 +61,9 @@ int			setup(int argc, char **argv, t_settings *sett);
 
 int			start_banquet(t_settings *s);
 int			death_during(t_philo *phi, int action_time);
+
+void		*monitor_routine(void *param);
+
 
 long int	get_now(void);
 void		print_status(t_philo *philo, char *status);

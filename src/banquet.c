@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 01:26:18 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/14 03:47:37 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/17 01:19:20 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,36 @@ void	*lonephilo(t_philo *phi)
 {
 	pthread_mutex_lock(&phi->sett->forks[phi->rfork]);
 	print_status(phi, TAKEN_FORK);
-	usleep(phi->sett->ttdie * 1000);
 	print_status(phi, THINKING);
+	usleep(phi->sett->ttdie * 1000);
 	print_status(phi, DIED);
+	phi->sett->stop_sim = 1;
 	return (NULL);
 }
 
-int	eat(t_philo *phi)
+void	eat(t_philo *phi)
 {
 	pthread_mutex_lock(&phi->sett->forks[phi->rfork]);
+	if (phi->sett->stop_sim)
+	{
+		pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
+		return ;
+	}
 	print_status(phi, TAKEN_FORK);
 	pthread_mutex_lock(&phi->sett->forks[phi->lfork]);
-	print_status(phi, TAKEN_FORK);
-	phi->lastmeal = get_now() + phi->sett->tteat;
-	print_status(phi, EATING);
-	if (death_during(phi, phi->sett->tteat))
+	if (phi->sett->stop_sim)
 	{
 		pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
 		pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
-		return (0);
+		return ;
 	}
+	print_status(phi, TAKEN_FORK);
+	phi->lastmeal = get_now();
+	print_status(phi, EATING);
+	usleep(phi->sett->tteat * 1000);
 	pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
 	pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
 	phi->have_eaten++;
-	return (1);
 }
 
 void	*routine(void *param)
@@ -50,15 +56,15 @@ void	*routine(void *param)
 	if (phi->sett->nphilos == 1)
 		return (lonephilo(phi));
 	if (phi->id % 2 == 0)
-		usleep(500);
-	while (!phi->sett->someone_died)
+		usleep(1000);
+	while (!phi->sett->stop_sim)
 	{
 		print_status(phi, THINKING);
-		if (!eat(phi))
+		eat(phi);
+		if (phi->sett->stop_sim)
 			break ;
 		print_status(phi, SLEEPING);
-		if (death_during(phi, phi->sett->ttsleep))
-			break ;
+		usleep(phi->sett->ttsleep * 1000);
 	}
 	return (NULL);
 }
@@ -72,9 +78,13 @@ int	start_banquet(t_settings *s)
 	while (++i < s->nphilos)
 		if (pthread_create(&s->philos[i].thread, NULL, &routine, &s->philos[i]))
 			return (free_everything(s));
+	if (pthread_create(&s->monitor, NULL, &monitor_routine, s))
+		return (free_everything(s));
 	i = -1;
 	while (++i < s->nphilos)
 		if (pthread_join(s->philos[i].thread, NULL))
 			return (free_everything(s));
+	if (pthread_join(s->monitor, NULL))
+		return (free_everything(s));
 	return (1);
 }
