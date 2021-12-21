@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 19:17:01 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/16 03:48:53 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/21 23:09:13 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	invalid_args(int argc, char **argv)
 	return (0);
 }
 
-int	ft_atoi(char *str)
+int	miniatoi(char *str)
 {
 	int	res;
 
@@ -62,15 +62,15 @@ int	setup(int argc, char **argv, t_settings *sett)
 	if ((argc != 4 && argc != 5) || invalid_args(argc, argv))
 		return (0);
 	sett->stop_sim = 0;
-	sett->nphilos = ft_atoi(argv[0]);
-	sett->ttdie = ft_atoi(argv[1]);
-	sett->tteat = ft_atoi(argv[2]);
-	sett->ttsleep = ft_atoi(argv[3]);
+	sett->nphilos = miniatoi(argv[0]);
+	sett->ttdie = miniatoi(argv[1]);
+	sett->tteat = miniatoi(argv[2]);
+	sett->ttsleep = miniatoi(argv[3]);
 	if (sett->nphilos == 0 || sett->ttdie == 0
 		|| sett->tteat == 0 || sett->ttsleep == 0)
 		return (0);
 	if (argv[4])
-		sett->tmust_eat = ft_atoi(argv[4]);
+		sett->tmust_eat = miniatoi(argv[4]);
 	if (argv[4] && sett->tmust_eat == 0)
 		return (0);
 	sett->philos = NULL;
