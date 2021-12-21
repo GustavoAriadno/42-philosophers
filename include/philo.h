@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 23:27:06 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/16 03:48:20 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/22 00:35:57 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,8 @@ int			death_during(t_philo *phi, int action_time);
 
 void		*monitor_routine(void *param);
 
-
 long int	get_now(void);
-void		print_status(t_philo *philo, char *status);
+void		print_status(long int now, t_philo *philo, char *status);
 
 int			basic_free(t_settings *sett);
 int			free_n_philos(t_settings *sett, int n);

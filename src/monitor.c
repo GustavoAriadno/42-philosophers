@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 04:18:55 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/17 01:19:03 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/22 00:02:43 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	stop_sim(t_settings *sett)
 	{
 		if (get_now() - sett->philos[i].lastmeal > sett->ttdie)
 		{
-			print_status(&sett->philos[i], DIED);
+			print_status(get_now(), &sett->philos[i], DIED);
 			return (1);
 		}
 		if (sett->philos[i].have_eaten >= sett->tmust_eat)

@@ -6,7 +6,7 @@
 /*   By: gariadno <gariadno@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/03 01:26:18 by gariadno          #+#    #+#             */
-/*   Updated: 2021/12/17 01:19:20 by gariadno         ###   ########.fr       */
+/*   Updated: 2021/12/22 00:25:09 by gariadno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	*lonephilo(t_philo *phi)
 {
 	pthread_mutex_lock(&phi->sett->forks[phi->rfork]);
-	print_status(phi, TAKEN_FORK);
-	print_status(phi, THINKING);
+	print_status(get_now(), phi, TAKEN_FORK);
+	print_status(get_now(), phi, THINKING);
 	usleep(phi->sett->ttdie * 1000);
-	print_status(phi, DIED);
+	print_status(get_now(), phi, DIED);
 	phi->sett->stop_sim = 1;
 	return (NULL);
 }
@@ -31,7 +31,7 @@ void	eat(t_philo *phi)
 		pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
 		return ;
 	}
-	print_status(phi, TAKEN_FORK);
+	print_status(get_now(), phi, TAKEN_FORK);
 	pthread_mutex_lock(&phi->sett->forks[phi->lfork]);
 	if (phi->sett->stop_sim)
 	{
@@ -39,9 +39,9 @@ void	eat(t_philo *phi)
 		pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
 		return ;
 	}
-	print_status(phi, TAKEN_FORK);
+	print_status(get_now(), phi, TAKEN_FORK);
 	phi->lastmeal = get_now();
-	print_status(phi, EATING);
+	print_status(get_now(), phi, EATING);
 	usleep(phi->sett->tteat * 1000);
 	pthread_mutex_unlock(&phi->sett->forks[phi->rfork]);
 	pthread_mutex_unlock(&phi->sett->forks[phi->lfork]);
@@ -56,15 +56,17 @@ void	*routine(void *param)
 	if (phi->sett->nphilos == 1)
 		return (lonephilo(phi));
 	if (phi->id % 2 == 0)
-		usleep(1000);
+		usleep(1600);
 	while (!phi->sett->stop_sim)
 	{
-		print_status(phi, THINKING);
 		eat(phi);
 		if (phi->sett->stop_sim)
 			break ;
-		print_status(phi, SLEEPING);
+		print_status(get_now(), phi, SLEEPING);
 		usleep(phi->sett->ttsleep * 1000);
+		if (phi->sett->stop_sim)
+			break ;
+		print_status(get_now(), phi, THINKING);
 	}
 	return (NULL);
 }
